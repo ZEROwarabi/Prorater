@@ -2,8 +2,9 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { Search, ChevronRight, SlidersHorizontal, X, Plus, Check } from 'lucide-react';
+import mockData from '../data.json';
 
-type Review = any;
+type Review = typeof mockData[0];
 
 type SortOption = 'reviews' | 'profRating' | 'easyRating';
 
@@ -44,7 +45,7 @@ const courseFullNames: Record<string, string> = {
   'PSYC': 'Psychology'
 };
 
-export default function ClientPage({ initialData }: { initialData: Review[] }) {
+export default function Home() {
   const [activeTab, setActiveTab] = useState<'course' | 'prof'>('course');
   const [searchCourse, setSearchCourse] = useState("");
   const [searchProf, setSearchProf] = useState("");
@@ -57,12 +58,12 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
   const [compareList, setCompareList] = useState<{profName: string, reviews: Review[]}[]>([]);
   const [showCompareModal, setShowCompareModal] = useState(false);
 
-  const uniqueCourses = useMemo(() => Array.from(new Set(initialData.map(r => r.course).filter(Boolean))).sort(), []);
-  const uniqueProfs = useMemo(() => Array.from(new Set(initialData.map(r => r.profName).filter(Boolean))).sort(), []);
+  const uniqueCourses = useMemo(() => Array.from(new Set(mockData.map(r => r.course).filter(Boolean))).sort(), []);
+  const uniqueProfs = useMemo(() => Array.from(new Set(mockData.map(r => r.profName).filter(Boolean))).sort(), []);
 
   const filteredData = useMemo(() => {
     if (activeTab === 'course') {
-      let data = initialData;
+      let data = mockData;
       // Filter by GE Area if active
       if (geFilter.length > 0) {
         data = data.filter(r => geFilter.includes(r.course.toUpperCase()));
@@ -78,8 +79,8 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
       }
       return data;
     } else {
-      if (!searchProf) return initialData;
-      return initialData.filter(r => r.profName.toLowerCase().includes(searchProf.toLowerCase()));
+      if (!searchProf) return mockData;
+      return mockData.filter(r => r.profName.toLowerCase().includes(searchProf.toLowerCase()));
     }
   }, [activeTab, searchCourse, searchProf, geFilter, uniqueCourses]);
 
