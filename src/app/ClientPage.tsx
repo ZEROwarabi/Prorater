@@ -279,65 +279,53 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
               </datalist>
               
               {/* Quick Tags Section */}
-              <div className="mt-12 animate-fade-in-up">
-                <div className="text-center mb-6 text-xs tracking-[0.2em] text-[#5a5866] font-medium uppercase">主要な分野から探す</div>
-                <div className="flex flex-wrap justify-center gap-3 mb-10 max-w-4xl mx-auto px-4">
-                  {uniqueCourses.map(subj => (
-                    <button 
-                      key={subj}
-                      onClick={() => { 
-                        if (searchCourse === subj) { setSearchCourse(""); }
-                        else { setSearchCourse(subj); setGeFilter([]); }
-                      }} 
-                      className={`px-5 py-2 rounded-full border text-xs font-medium tracking-wide transition-colors shadow-sm ${searchCourse === subj && geFilter.length === 0 ? 'bg-[#1a162d] border-[#1a162d] text-white' : 'border-[#1a162d]/15 text-[#3a3845] hover:border-[#1a162d] hover:text-[#1a162d] bg-white/50'}`}
-                    >
-                      {courseFullNames[subj] || subj}
-                    </button>
-                  ))}
-                </div>
+              {(!searchCourse && geFilter.length === 0) ? (
+                <div className="mt-12 animate-fade-in-up">
+                  <div className="text-center mb-6 text-xs tracking-[0.2em] text-[#5a5866] font-medium uppercase">主要な分野から探す</div>
+                  <div className="flex flex-wrap justify-center gap-3 mb-10 max-w-4xl mx-auto px-4">
+                    {uniqueCourses.map(subj => (
+                      <button 
+                        key={subj}
+                        onClick={() => { setSearchCourse(subj); setGeFilter([]); }} 
+                        className="px-5 py-2 rounded-full border text-xs font-medium tracking-wide transition-colors shadow-sm border-[#1a162d]/15 text-[#3a3845] hover:border-[#1a162d] hover:text-[#1a162d] bg-white/50"
+                      >
+                        {courseFullNames[subj] || subj}
+                      </button>
+                    ))}
+                  </div>
 
-                <div className="text-center mb-6 text-xs tracking-[0.2em] text-[#5a5866] font-medium uppercase">Cal-GETC / IGETC エリアから探す</div>
-                <div className="flex flex-wrap justify-center gap-3">
-                  {[
-                    { label: 'Area 1 (English)', keywords: ['ENGL', 'COMM'] },
-                    { label: 'Area 2 (Math)', keywords: ['MATH', 'BUS', 'STAT', 'BUSAC'] },
-                    { label: 'Area 3 (Arts & Humanities)', keywords: ['ART', 'ARTHS', 'MUSIC', 'DRAMA', 'HIST', 'HUMAN', 'PHILO', 'ENGL', 'SPAN', 'JAPAN', 'JAPN'] },
-                    { label: 'Area 4 (Social Sciences)', keywords: ['ANTHR', 'ECON', 'SOCIO', 'POLS', 'PSYCH', 'PSYC', 'HIST', 'GEOG', 'ETHNIC', 'ETHN'] },
-                    { label: 'Area 5A (Physical Sciences)', keywords: ['ASTRO', 'CHEM', 'GEOG', 'GEOL', 'OCEAN', 'PHYS', 'PHYSC'] },
-                    { label: 'Area 5B (Biological Sciences)', keywords: ['ANTHR', 'BIOSC', 'BIOL', 'PSYC', 'PSYCH'] },
-                    { label: 'Area 6 (Ethnic Studies)', keywords: ['ETHNIC', 'ETHN'] },
-                  ].map(area => {
-                    const isActive = geFilter.join(',') === area.keywords.join(',');
-                    return (
+                  <div className="text-center mb-6 text-xs tracking-[0.2em] text-[#5a5866] font-medium uppercase">Cal-GETC / IGETC エリアから探す</div>
+                  <div className="flex flex-wrap justify-center gap-3">
+                    {[
+                      { label: 'Area 1 (English)', keywords: ['ENGL', 'COMM'] },
+                      { label: 'Area 2 (Math)', keywords: ['MATH', 'BUS', 'STAT', 'BUSAC'] },
+                      { label: 'Area 3 (Arts & Humanities)', keywords: ['ART', 'ARTHS', 'MUSIC', 'DRAMA', 'HIST', 'HUMAN', 'PHILO', 'ENGL', 'SPAN', 'JAPAN', 'JAPN'] },
+                      { label: 'Area 4 (Social Sciences)', keywords: ['ANTHR', 'ECON', 'SOCIO', 'POLS', 'PSYCH', 'PSYC', 'HIST', 'GEOG', 'ETHNIC', 'ETHN'] },
+                      { label: 'Area 5A (Physical Sciences)', keywords: ['ASTRO', 'CHEM', 'GEOG', 'GEOL', 'OCEAN', 'PHYS', 'PHYSC'] },
+                      { label: 'Area 5B (Biological Sciences)', keywords: ['ANTHR', 'BIOSC', 'BIOL', 'PSYC', 'PSYCH'] },
+                      { label: 'Area 6 (Ethnic Studies)', keywords: ['ETHNIC', 'ETHN'] },
+                    ].map(area => (
                       <button 
                         key={area.label}
-                        onClick={() => { 
-                          setSearchCourse(""); 
-                          if (isActive) setGeFilter([]);
-                          else setGeFilter(area.keywords); 
-                        }} 
-                        className={`px-5 py-2 rounded-full border text-xs font-medium tracking-wide transition-colors shadow-sm ${isActive ? 'bg-[#1a162d] border-[#1a162d] text-white' : 'border-[#1a162d]/15 text-[#3a3845] hover:bg-[#1a162d] hover:border-[#1a162d] hover:text-white bg-white/50'}`}
+                        onClick={() => { setSearchCourse(""); setGeFilter(area.keywords); }} 
+                        className="px-5 py-2 rounded-full border text-xs font-medium tracking-wide transition-colors shadow-sm border-[#1a162d]/15 text-[#3a3845] hover:bg-[#1a162d] hover:border-[#1a162d] hover:text-white bg-white/50"
                       >
                         {area.label}
                       </button>
-                    );
-                  })}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </>
-          ) : (
-            <>
-              <input 
-                type="text" 
-                list="profs"
-                value={searchProf}
-                onChange={(e) => setSearchProf(e.target.value)}
-                placeholder="教授の名前を入力"
-                className="w-full bg-transparent border-b border-[#1a162d]/20 py-4 text-3xl md:text-5xl font-serif font-light focus:outline-none focus:border-[#1a162d] transition-colors text-center text-[#1a162d] placeholder:text-[#1a162d]/20"
-              />
-              <datalist id="profs">
-                {uniqueProfs.map(p => <option key={p} value={p} />)}
-              </datalist>
+              ) : (
+                <div className="mt-8 flex justify-center animate-fade-in-up">
+                  <button 
+                    onClick={() => { setSearchCourse(""); setGeFilter([]); }}
+                    className="flex items-center gap-2 px-6 py-2.5 rounded-full border border-[#1a162d] bg-[#1a162d] text-white text-xs font-bold tracking-widest transition-all hover:bg-transparent hover:text-[#1a162d] shadow-sm hover:shadow"
+                  >
+                    <X size={14} />
+                    <span>フィルターをクリア</span>
+                  </button>
+                </div>
+              )}
             </>
           )}
         </div>
