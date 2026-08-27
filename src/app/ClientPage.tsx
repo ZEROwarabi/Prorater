@@ -49,9 +49,20 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
   const [sortBy, setSortBy] = useState<SortOption>('reviews');
   const [geFilter, setGeFilter] = useState<string[]>([]); // New state for GE Area filtering
   const [modalTab, setModalTab] = useState<'easy'|'prof'|'cls'>('easy');
+  
 
   // Modals / Overlays
   const [selectedProfDetails, setSelectedProfDetails] = useState<{profName: string, reviews: Review[]} | null>(null);
+  const [modalMounted, setModalMounted] = useState(false);
+
+  useEffect(() => {
+    if (selectedProfDetails) {
+      const t = setTimeout(() => setModalMounted(true), 50);
+      return () => clearTimeout(t);
+    } else {
+      setModalMounted(false);
+    }
+  }, [selectedProfDetails]);
   const [compareList, setCompareList] = useState<{profName: string, reviews: Review[]}[]>([]);
   const [showCompareModal, setShowCompareModal] = useState(false);
 
@@ -581,7 +592,7 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
                           <div className="flex-1 h-3 bg-white/50 rounded-full overflow-hidden border border-[#1a162d]/5">
                             <div 
                               className="h-full bg-[#1a162d] rounded-full transition-all duration-1000 ease-out group-hover:bg-[#3a3845]"
-                              style={{ width: `${percentage}%` }}
+                                style={{ width: modalMounted ? `${percentage}%` : '0%' }}
                             ></div>
                           </div>
                           <div className="w-6 text-right text-xs font-serif text-[#1a162d]">{count}</div>
