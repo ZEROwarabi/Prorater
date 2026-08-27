@@ -277,16 +277,15 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
               {/* Quick Tags Section */}
               <div className="mt-12 animate-fade-in-up">
                 <div className="text-center mb-6 text-xs tracking-[0.2em] text-[#5a5866] font-medium uppercase">主要な分野から探す</div>
-                <div className="flex overflow-x-auto pb-4 gap-3 mb-6 scrollbar-hide snap-x mx-auto max-w-full px-4" style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                <div className="flex flex-wrap justify-center gap-3 mb-10 max-w-4xl mx-auto px-4">
                   {uniqueCourses.map(subj => (
                     <button 
                       key={subj}
-                      style={{ flexShrink: 0 }}
                       onClick={() => { 
                         if (searchCourse === subj) { setSearchCourse(""); }
                         else { setSearchCourse(subj); setGeFilter([]); }
                       }} 
-                      className={`snap-center px-5 py-2 rounded-full border text-xs font-medium tracking-wide transition-colors shadow-sm ${searchCourse === subj && geFilter.length === 0 ? 'bg-[#1a162d] border-[#1a162d] text-white' : 'border-[#1a162d]/15 text-[#3a3845] hover:border-[#1a162d] hover:text-[#1a162d] bg-white/50'}`}
+                      className={`px-5 py-2 rounded-full border text-xs font-medium tracking-wide transition-colors shadow-sm ${searchCourse === subj && geFilter.length === 0 ? 'bg-[#1a162d] border-[#1a162d] text-white' : 'border-[#1a162d]/15 text-[#3a3845] hover:border-[#1a162d] hover:text-[#1a162d] bg-white/50'}`}
                     >
                       {courseFullNames[subj] || subj}
                     </button>
