@@ -65,6 +65,7 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
 
   useEffect(() => {
     if (selectedProfDetails) {
+      setModalTab('easy');
       const t = setTimeout(() => setModalMounted(true), 50);
       return () => clearTimeout(t);
     } else {
