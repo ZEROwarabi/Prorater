@@ -48,7 +48,7 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
   const [activeTab, setActiveTab] = useState<'course' | 'prof'>('course');
   const [searchCourse, setSearchCourse] = useState("");
   const [searchProf, setSearchProf] = useState("");
-  const [sortBy, setSortBy] = useState<SortOption>('easyRating');
+  const [sortBy, setSortBy] = useState<SortOption>('reviews');
   const [geFilter, setGeFilter] = useState<string[]>([]); // New state for GE Area filtering
   const [showAllTags, setShowAllTags] = useState(false);
   const [modalTab, setModalTab] = useState<'easy'|'prof'|'cls'>('easy');
@@ -112,6 +112,19 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
     return groups;
   }, [filteredData]);
 
+
+  const getTermScore = (term: string) => {
+    const match = String(term || "").match(/(\d{4})\s+(Spring|Summer|Fall|Winter)/i);
+    if (!match) return 0;
+    const year = parseInt(match[1]);
+    const seasonStr = match[2].toLowerCase();
+    let season = 0;
+    if (seasonStr === "spring") season = 1;
+    else if (seasonStr === "summer") season = 2;
+    else if (seasonStr === "fall") season = 3;
+    else if (seasonStr === "winter") season = 4;
+    return year * 10 + season;
+  };
   const calculateAverages = (reviews: Review[]) => {
     const sum = (key: 'ratingProf' | 'ratingClass' | 'ratingEasy') => reviews.reduce((a, b) => a + (b[key] || 0), 0);
     const count = (key: 'ratingProf' | 'ratingClass' | 'ratingEasy') => reviews.filter(r => r[key] > 0).length;
@@ -402,27 +415,19 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
                   // Sorting Logic
                   const sortedProfs = Object.entries(profGroups).map(([profName, reviews]) => {
                     const sortedReviews = [...reviews].sort((a, b) => {
-                      const parseTerm = (t: string) => {
-                        const match = String(t || '').match(/(\d{4})\s+(Spring|Summer|Fall|Winter)/i);
-                        if (!match) return { year: 0, season: 0 };
-                        const year = parseInt(match[1]);
-                        const seasonStr = match[2].toLowerCase();
-                        let season = 0;
-                        if (seasonStr === 'spring') season = 1;
-                        else if (seasonStr === 'summer') season = 2;
-                        else if (seasonStr === 'fall') season = 3;
-                        else if (seasonStr === 'winter') season = 4;
-                        return { year, season };
-                      };
-                      const termA = parseTerm(a.term);
-                      const termB = parseTerm(b.term);
-                      if (termB.year !== termA.year) return termB.year - termA.year;
-                      return termB.season - termA.season;
+                      const scoreA = getTermScore(a.term);
+                          const scoreB = getTermScore(b.term);
+                          return scoreB - scoreA;
                     });
                     const avgs = calculateAverages(sortedReviews);
                     return { profName, reviews: sortedReviews, avgs };
                   }).sort((a, b) => {
-                    if (sortBy === 'reviews') return b.reviews.length - a.reviews.length;
+                    if (sortBy === 'reviews') {
+                          if (b.reviews.length !== a.reviews.length) return b.reviews.length - a.reviews.length;
+                          const latestA = a.reviews[0] ? getTermScore(a.reviews[0].term) : 0;
+                          const latestB = b.reviews[0] ? getTermScore(b.reviews[0].term) : 0;
+                          return latestB - latestA;
+                        }
                     if (sortBy === 'profRating') return parseFloat(b.avgs.prof) - parseFloat(a.avgs.prof);
                     if (sortBy === 'easyRating') return parseFloat(b.avgs.easy) - parseFloat(a.avgs.easy);
                     return 0;
@@ -496,27 +501,19 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
                   {Object.entries(profGrouped)
                     .map(([profName, reviews]) => {
                       const sortedReviews = [...reviews].sort((a, b) => {
-                        const parseTerm = (t: string) => {
-                          const match = String(t || '').match(/(\d{4})\s+(Spring|Summer|Fall|Winter)/i);
-                          if (!match) return { year: 0, season: 0 };
-                          const year = parseInt(match[1]);
-                          const seasonStr = match[2].toLowerCase();
-                          let season = 0;
-                          if (seasonStr === 'spring') season = 1;
-                          else if (seasonStr === 'summer') season = 2;
-                          else if (seasonStr === 'fall') season = 3;
-                          else if (seasonStr === 'winter') season = 4;
-                          return { year, season };
-                        };
-                        const termA = parseTerm(a.term);
-                        const termB = parseTerm(b.term);
-                        if (termB.year !== termA.year) return termB.year - termA.year;
-                        return termB.season - termA.season;
+                        const scoreA = getTermScore(a.term);
+                          const scoreB = getTermScore(b.term);
+                          return scoreB - scoreA;
                       });
                       return { profName, reviews: sortedReviews, avgs: calculateAverages(sortedReviews) };
                     })
                     .sort((a, b) => {
-                      if (sortBy === 'reviews') return b.reviews.length - a.reviews.length;
+                      if (sortBy === 'reviews') {
+                          if (b.reviews.length !== a.reviews.length) return b.reviews.length - a.reviews.length;
+                          const latestA = a.reviews[0] ? getTermScore(a.reviews[0].term) : 0;
+                          const latestB = b.reviews[0] ? getTermScore(b.reviews[0].term) : 0;
+                          return latestB - latestA;
+                        }
                       if (sortBy === 'profRating') return parseFloat(b.avgs.prof) - parseFloat(a.avgs.prof);
                       if (sortBy === 'easyRating') return parseFloat(b.avgs.easy) - parseFloat(a.avgs.easy);
                       return 0;
