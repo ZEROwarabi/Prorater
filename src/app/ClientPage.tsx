@@ -64,11 +64,12 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
     });
     return Object.keys(counts).sort((a, b) => counts[b] - counts[a]).slice(0, 10);
   }, [initialData]);
-  const uniqueProfs = useMemo(() => Array.from(new Set(initialData.map(r => r.profName).filter(Boolean))).sort(), []);
+  const uniqueProfs = useMemo(() => Array.from(new Set(initialData.map(r => r.profName).filter(p => p && !p.includes('Unknown')))).sort(), []);
 
   const filteredData = useMemo(() => {
+    const validData = initialData.filter(r => r.profName && !r.profName.includes('Unknown'));
     if (activeTab === 'course') {
-      let data = initialData;
+      let data = validData;
       // Filter by GE Area if active
       if (geFilter.length > 0) {
         data = data.filter(r => geFilter.includes(r.course.toUpperCase()));
@@ -84,10 +85,10 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
       }
       return data;
     } else {
-      if (!searchProf) return initialData;
-      return initialData.filter(r => r.profName.toLowerCase().includes(searchProf.toLowerCase()));
+      if (!searchProf) return validData;
+      return validData.filter(r => r.profName.toLowerCase().includes(searchProf.toLowerCase()));
     }
-  }, [activeTab, searchCourse, searchProf, geFilter, uniqueCourses]);
+  }, [activeTab, searchCourse, searchProf, geFilter, uniqueCourses, initialData]);
 
   const courseGrouped = useMemo(() => {
     const groups: Record<string, Record<string, Review[]>> = {};
