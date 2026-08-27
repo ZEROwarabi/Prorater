@@ -17,6 +17,11 @@ const notoSerifJP = Noto_Serif_JP({
 export const metadata: Metadata = {
   title: "ProRater - Course Comparison",
   description: "Find the right professor for your next course.",
+  icons: {
+    icon: "/icon.png?v=2",
+    shortcut: "/icon.png?v=2",
+    apple: "/icon.png?v=2",
+  },
 };
 
 export default function RootLayout({
