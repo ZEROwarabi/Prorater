@@ -402,10 +402,10 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
                         <button
                           key={course}
                           onClick={() => setActiveCourseTab(course)}
-                          className={`shrink-0 px-6 py-3 text-sm font-bold tracking-widest rounded-full transition-all whitespace-nowrap flex items-center gap-3 ${activeCourseTab === course ? 'bg-[#1a162d] text-white shadow-md' : 'bg-white/60 text-[#8c8a99] hover:bg-white hover:shadow hover:text-[#1a162d]'}`}
+                          className={`shrink-0 px-6 py-3 text-sm font-bold tracking-widest rounded-full transition-all duration-300 whitespace-nowrap flex items-center gap-3 ${activeCourseTab === course ? 'bg-white/80 backdrop-blur-md text-[#1a162d] shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/60' : 'bg-transparent text-[#8c8a99] hover:bg-white/50 hover:text-[#1a162d]'}`}
                         >
                           <span>{course}</span>
-                          <span className={`text-[10px] font-sans px-2 py-0.5 rounded-full ${activeCourseTab === course ? 'bg-white/20 text-white' : 'bg-[#1a162d]/5 text-[#8c8a99]'}`}>
+                          <span className={`text-[10px] font-sans px-2 py-0.5 rounded-full ${activeCourseTab === course ? 'bg-[#1a162d]/10 text-[#1a162d] font-bold' : 'bg-[#1a162d]/5 text-[#8c8a99]'}`}>
                             {Object.keys(courseGrouped[course]).length}
                           </span>
                         </button>
