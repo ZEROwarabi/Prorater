@@ -51,6 +51,7 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
   const [sortBy, setSortBy] = useState<SortOption>('easy');
   const [geFilter, setGeFilter] = useState<string[]>([]); // New state for GE Area filtering
   const [showAllTags, setShowAllTags] = useState(false);
+  const [modalTab, setModalTab] = useState<'easy'|'prof'|'cls'>('easy');
 
   // Modals / Overlays
   const [selectedProfDetails, setSelectedProfDetails] = useState<{profName: string, reviews: Review[]} | null>(null);
@@ -606,17 +607,28 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
 
               {/* Right Column: Rating Distribution */}
               <div>
-                <h3 className="text-xs tracking-widest text-[#1a162d] uppercase mb-8 flex items-center gap-4">
-                  教授の質・評価分布 <span className="flex-1 h-[1px] bg-[#1a162d]/10"></span>
-                </h3>
+                <div className="flex items-center gap-4 mb-8">
+                  <h3 className="text-xs tracking-widest text-[#1a162d] uppercase whitespace-nowrap">評価分布</h3>
+                  <div className="flex-1 h-[1px] bg-[#1a162d]/10"></div>
+                  <div className="flex gap-2">
+                    <button onClick={() => setModalTab('easy')} className={`text-[10px] px-3 py-1 rounded-full border transition-colors ${modalTab === 'easy' ? 'bg-[#1a162d] text-white border-[#1a162d]' : 'text-[#8c8a99] border-[#1a162d]/20 hover:border-[#1a162d] hover:text-[#1a162d]'}`}>Aの易しさ</button>
+                    <button onClick={() => setModalTab('prof')} className={`text-[10px] px-3 py-1 rounded-full border transition-colors ${modalTab === 'prof' ? 'bg-[#1a162d] text-white border-[#1a162d]' : 'text-[#8c8a99] border-[#1a162d]/20 hover:border-[#1a162d] hover:text-[#1a162d]'}`}>教授の質</button>
+                    <button onClick={() => setModalTab('cls')} className={`text-[10px] px-3 py-1 rounded-full border transition-colors ${modalTab === 'cls' ? 'bg-[#1a162d] text-white border-[#1a162d]' : 'text-[#8c8a99] border-[#1a162d]/20 hover:border-[#1a162d] hover:text-[#1a162d]'}`}>授業の質</button>
+                  </div>
+                </div>
                 <div className="space-y-4">
                   {(() => {
                     const dist = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
                     let totalValid = 0;
                     selectedProfDetails.reviews.forEach(r => {
-                      const val = Math.round(r.ratingProf);
+                      let rawVal = 0;
+                      if (modalTab === 'easy') rawVal = r.ratingEasy;
+                      else if (modalTab === 'prof') rawVal = r.ratingProf;
+                      else if (modalTab === 'cls') rawVal = r.ratingClass;
+                      
+                      const val = Math.round(rawVal);
                       if (val >= 1 && val <= 5) {
-                        dist[val as keyof typeof dist]++;
+                        dist[val]++;
                         totalValid++;
                       }
                     });
@@ -624,30 +636,28 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
                     const labels = { 5: '最高', 4: '良い', 3: '普通', 2: '微妙', 1: '最悪' };
                     
                     return [5, 4, 3, 2, 1].map(score => {
-                      const count = dist[score as keyof typeof dist];
+                      const count = dist[score];
                       const percentage = totalValid > 0 ? (count / totalValid) * 100 : 0;
                       return (
                         <div key={score} className="flex items-center gap-4 group">
                           <div className="w-16 text-right shrink-0">
                             <span className="text-xs font-medium text-[#1a162d]">{score}</span>
-                            <span className="text-[10px] text-[#8c8a99] ml-2">{labels[score as keyof typeof labels]}</span>
+                            <span className="text-[10px] text-[#8c8a99] ml-2">{labels[score]}</span>
                           </div>
                           <div className="flex-1 h-3 bg-white/50 rounded-full overflow-hidden border border-[#1a162d]/5">
                             <div 
-                              className="h-full bg-[#1a162d] rounded-full transition-all duration-1000 ease-out" 
+                              className="h-full bg-[#1a162d] rounded-full transition-all duration-1000 ease-out group-hover:bg-[#3a3845]"
                               style={{ width: `${percentage}%` }}
                             ></div>
                           </div>
-                          <div className="w-6 text-left shrink-0">
-                            <span className="text-xs text-[#5a5866] font-medium">{count}</span>
-                          </div>
+                          <div className="w-6 text-right text-xs font-serif text-[#1a162d]">{count}</div>
                         </div>
                       );
                     });
                   })()}
-                </div>
-                <div className="mt-6 text-right text-[10px] text-[#8c8a99] tracking-widest">
-                  総レビュー数: {selectedProfDetails.reviews.length}件
+                  <div className="text-[10px] text-right mt-6 tracking-widest text-[#8c8a99]">
+                    総レビュー数: {selectedProfDetails.reviews.length}件
+                  </div>
                 </div>
               </div>
             </div>
