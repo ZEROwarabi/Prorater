@@ -394,19 +394,18 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
           {Object.keys(courseGrouped).length === 0 && (searchQuery || geFilter.length > 0) ? (
               <div className="text-center py-12 text-[#8c8a99] tracking-widest text-sm font-light">結果が見つかりません。</div>
             ) : (
-              <div key={searchQuery + geFilter.join(',')} className="animate-fade-in-up flex flex-col lg:flex-row items-start gap-12" style={{ animationDuration: '0.8s' }}>
-                  {/* Left Sidebar (Tabs) */}
+              <div key={searchQuery + geFilter.join(',')} className="animate-fade-in-up flex flex-col gap-12" style={{ animationDuration: '0.8s' }}>
+                  {/* Sticky Top Tabs */}
                   {Object.keys(courseGrouped).length > 1 && (
-                    <div className="w-full lg:w-64 shrink-0 lg:sticky lg:top-8 flex lg:flex-col gap-2 overflow-x-auto pb-4 lg:pb-0 scrollbar-hide">
-                      <div className="text-xs font-bold tracking-widest text-[#8c8a99] mb-4 uppercase px-4 hidden lg:block">科目を選択</div>
+                    <div className="w-full sticky top-0 z-40 bg-[#ecebe8]/90 backdrop-blur-md py-4 -mx-6 px-6 lg:-mx-12 lg:px-12 border-b border-[#1a162d]/10 flex gap-3 overflow-x-auto scrollbar-hide shadow-sm">
                       {Object.keys(courseGrouped).sort().map(course => (
                         <button
                           key={course}
                           onClick={() => setActiveCourseTab(course)}
-                          className={`px-4 py-3 text-left text-sm font-bold tracking-widest rounded-xl transition-all whitespace-nowrap flex justify-between items-center ${activeCourseTab === course ? 'bg-[#1a162d] text-white shadow-md' : 'bg-transparent text-[#8c8a99] hover:bg-white hover:shadow hover:text-[#1a162d]'}`}
+                          className={`shrink-0 px-6 py-3 text-sm font-bold tracking-widest rounded-full transition-all whitespace-nowrap flex items-center gap-3 ${activeCourseTab === course ? 'bg-[#1a162d] text-white shadow-md' : 'bg-white/60 text-[#8c8a99] hover:bg-white hover:shadow hover:text-[#1a162d]'}`}
                         >
                           <span>{course}</span>
-                          <span className={`text-xs font-sans ${activeCourseTab === course ? 'opacity-80' : 'opacity-60'}`}>
+                          <span className={`text-[10px] font-sans px-2 py-0.5 rounded-full ${activeCourseTab === course ? 'bg-white/20 text-white' : 'bg-[#1a162d]/5 text-[#8c8a99]'}`}>
                             {Object.keys(courseGrouped[course]).length}
                           </span>
                         </button>
@@ -414,8 +413,8 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
                     </div>
                   )}
 
-                  {/* Right Content Area */}
-                  <div className="flex-1 min-w-0 w-full space-y-32">
+                  {/* Content Area */}
+                  <div className="w-full space-y-32">
                     {Object.entries(courseGrouped)
                       .filter(([course]) => Object.keys(courseGrouped).length <= 1 || course === activeCourseTab)
                       .map(([course, profGroups]) => {
