@@ -449,35 +449,24 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
           <p className="text-[10px] tracking-widest text-[#5a5866] leading-relaxed mb-8 max-w-xl mx-auto">
             現在、総計<span className="font-bold text-[#1a162d]">{initialData.length}</span>件の学生レビューデータが登録されています。
           </p>
-          <div className="flex flex-col gap-3 max-w-lg mx-auto">
+          <div className="flex flex-col gap-1 max-w-[200px] mx-auto">
             {Object.entries(
               initialData.reduce((acc, r) => {
                 const match = String(r.term || "").match(/(\d{4})\s+(Spring|Summer|Fall|Winter)/i);
                 if (match) {
                   const year = match[1];
-                  const season = match[2].charAt(0).toUpperCase() + match[2].slice(1).toLowerCase();
-                  if (!acc[year]) acc[year] = {};
-                  acc[year][season] = (acc[year][season] || 0) + 1;
+                  acc[year] = (acc[year] || 0) + 1;
                 }
                 return acc;
-              }, {} as Record<string, Record<string, number>>)
-            ).sort((a, b) => parseInt(b[0]) - parseInt(a[0])).map(([year, seasonsObj]) => {
-              const seasons = seasonsObj as Record<string, number>;
-              const seasonOrder: Record<string, number> = { "Fall": 4, "Summer": 3, "Spring": 2, "Winter": 1 };
-              const sortedSeasons = Object.entries(seasons).sort((a, b) => seasonOrder[b[0]] - seasonOrder[a[0]]);
-              return (
-                <div key={year} className="flex flex-col md:flex-row md:items-center justify-between border-b border-[#1a162d]/10 pb-1.5 px-2 gap-1 md:gap-4">
-                  <span className="font-bold text-[#1a162d] text-[11px] tracking-widest text-left md:text-center w-12">{year}</span>
-                  <div className="flex flex-wrap gap-x-4 gap-y-1 justify-end flex-1">
-                    {sortedSeasons.map(([season, count]) => (
-                      <span key={season} className="text-[10px] tracking-widest text-[#5a5866]">
-                        {season} <strong className="text-[#1a162d]">{count}</strong><span className="text-[9px]">件</span>
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
+              }, {} as Record<string, number>)
+            ).sort((a, b) => parseInt(b[0]) - parseInt(a[0])).map(([year, count]) => (
+              <div key={year} className="flex justify-between items-center border-b border-[#1a162d]/10 pb-1.5 px-2">
+                <span className="font-bold text-[#1a162d] text-[11px] tracking-widest">{year}</span>
+                <span className="text-[10px] tracking-widest text-[#5a5866]">
+                  <strong className="text-[#1a162d]">{String(count)}</strong><span className="text-[9px] ml-1">件</span>
+                </span>
+              </div>
+            ))}
           </div>
         </footer>
 
