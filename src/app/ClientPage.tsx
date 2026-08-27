@@ -44,7 +44,15 @@ const courseFullNames: Record<string, string> = {
   'PSYC': 'Psychology'
 };
 
-export default function ClientPage({ initialData }: { initialData: Review[] }) {
+export default function ClientPage({ initialData: rawData }: { initialData: Review[] }) {
+  // Fix typos on the fly
+  const initialData = useMemo(() => {
+    return rawData.map(r => {
+      let p = r.profName || "";
+      if (p === "Elizabeth Matlook") p = "Elizabeth Matlock";
+      return { ...r, profName: p };
+    });
+  }, [rawData]);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>('reviews');
   const [geFilter, setGeFilter] = useState<string[]>([]); // New state for GE Area filtering
