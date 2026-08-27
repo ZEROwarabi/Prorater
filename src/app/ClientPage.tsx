@@ -181,7 +181,7 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
         {/* Compare Action */}
         <button 
           onClick={(e) => { e.stopPropagation(); toggleCompare(profName, reviews); }}
-          className={`absolute top-6 right-6 px-4 py-1.5 rounded-full border text-[10px] font-bold tracking-widest transition-all z-10 flex items-center gap-2 ${isComparing ? 'bg-[#1a162d] border-[#1a162d] text-white shadow-md' : 'bg-white border-[#1a162d]/20 text-[#5a5866] hover:border-[#1a162d] hover:text-[#1a162d] hover:bg-gray-50'}`}
+          className={`absolute top-6 right-6 px-4 py-1.5 rounded-full border text-xs font-bold tracking-widest transition-all z-10 flex items-center gap-2 ${isComparing ? 'bg-[#1a162d] border-[#1a162d] text-white shadow-md' : 'bg-white border-[#1a162d]/20 text-[#5a5866] hover:border-[#1a162d] hover:text-[#1a162d] hover:bg-gray-50'}`}
         >
           {isComparing ? (
             <>
@@ -203,7 +203,7 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
           >
             {profName}
           </h4>
-          <div className="mt-2 text-[10px] text-[#8c8a99] tracking-widest">
+          <div className="mt-2 text-xs text-[#8c8a99] tracking-widest">
             {reviews.length}件のレビュー
           </div>
         </div>
@@ -241,7 +241,7 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
             <div>
               <span className="text-xs font-bold text-[#5a5866] tracking-widest uppercase block mb-2">学生の声</span>
               <div className="pl-4 border-l-2 border-[#1a162d]/20 relative">
-                <div className="text-[10px] font-sans text-[#8c8a99] mb-1.5 flex items-center gap-2">
+                <div className="text-xs font-sans text-[#8c8a99] mb-1.5 flex items-center gap-2">
                   <span className="font-medium text-[#5a5866]">{reviews.find(r => r.comment)?.term}</span>
                 </div>
                 <p className="text-sm text-[#1a162d] leading-relaxed font-serif italic line-clamp-3">
@@ -305,7 +305,7 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
                       if (availableSubjs.length === 0) return null;
                       return (
                         <div key={catName} className="flex flex-col">
-                          <div className="text-left text-[10px] tracking-widest text-[#8c8a99] font-bold mb-3">{catName}</div>
+                          <div className="text-left text-xs tracking-widest text-[#8c8a99] font-bold mb-3">{catName}</div>
                           <div className="flex flex-wrap justify-start gap-2">
                             {availableSubjs.map(subj => (
                               <button 
@@ -327,7 +327,7 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
                       if (others.length === 0) return null;
                       return (
                         <div className="flex flex-col">
-                          <div className="text-left text-[10px] tracking-widest text-[#8c8a99] font-bold mb-3">その他</div>
+                          <div className="text-left text-xs tracking-widest text-[#8c8a99] font-bold mb-3">その他</div>
                           <div className="flex flex-wrap justify-start gap-2">
                             {others.map(subj => (
                               <button 
@@ -427,22 +427,22 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
                         </div>
 
                         <div className="flex items-center gap-6 mt-6 md:mt-0">
-                          <span className="text-[10px] tracking-widest text-[#8c8a99] uppercase mr-2"><SlidersHorizontal size={12} className="inline mr-2 -mt-0.5" />並べ替え</span>
+                          <span className="text-xs tracking-widest text-[#8c8a99] uppercase mr-2"><SlidersHorizontal size={12} className="inline mr-2 -mt-0.5" />並べ替え</span>
                           <button 
                             onClick={() => setSortBy('reviews')} 
-                            className={`text-[10px] tracking-widest transition-colors ${sortBy === 'reviews' ? 'text-[#1a162d] font-bold border-b border-[#1a162d]' : 'text-[#8c8a99] hover:text-[#1a162d]'}`}
+                            className={`text-xs tracking-widest transition-colors ${sortBy === 'reviews' ? 'text-[#1a162d] font-bold border-b border-[#1a162d]' : 'text-[#8c8a99] hover:text-[#1a162d]'}`}
                           >
                             レビュー数
                           </button>
                           <button 
                             onClick={() => setSortBy('profRating')} 
-                            className={`text-[10px] tracking-widest transition-colors ${sortBy === 'profRating' ? 'text-[#1a162d] font-bold border-b border-[#1a162d]' : 'text-[#8c8a99] hover:text-[#1a162d]'}`}
+                            className={`text-xs tracking-widest transition-colors ${sortBy === 'profRating' ? 'text-[#1a162d] font-bold border-b border-[#1a162d]' : 'text-[#8c8a99] hover:text-[#1a162d]'}`}
                           >
                             教授の質
                           </button>
                           <button 
                             onClick={() => setSortBy('easyRating')} 
-                            className={`text-[10px] tracking-widest transition-colors ${sortBy === 'easyRating' ? 'text-[#1a162d] font-bold border-b border-[#1a162d]' : 'text-[#8c8a99] hover:text-[#1a162d]'}`}
+                            className={`text-xs tracking-widest transition-colors ${sortBy === 'easyRating' ? 'text-[#1a162d] font-bold border-b border-[#1a162d]' : 'text-[#8c8a99] hover:text-[#1a162d]'}`}
                           >
                             Aの取りやすさ
                           </button>
@@ -465,7 +465,7 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
 
         <footer className="mt-24 border-t border-[#1a162d]/10 pt-12 pb-24 px-6 max-w-4xl mx-auto text-center opacity-80">
           <h3 className="text-xs font-bold tracking-[0.2em] text-[#1a162d] uppercase mb-6">About this Data</h3>
-          <p className="text-[10px] tracking-widest text-[#5a5866] leading-relaxed mb-8 max-w-xl mx-auto">
+          <p className="text-xs tracking-widest text-[#5a5866] leading-relaxed mb-8 max-w-xl mx-auto">
             現在、総計<span className="font-bold text-[#1a162d]">{initialData.length}</span>件の学生レビューデータが登録されています。
           </p>
           <div className="flex flex-col gap-1 max-w-[200px] mx-auto">
@@ -481,7 +481,7 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
             ).sort((a, b) => parseInt(b[0]) - parseInt(a[0])).map(([year, count]) => (
               <div key={year} className="flex justify-between items-center border-b border-[#1a162d]/10 pb-1.5 px-2">
                 <span className="font-bold text-[#1a162d] text-[11px] tracking-widest">{year}</span>
-                <span className="text-[10px] tracking-widest text-[#5a5866]">
+                <span className="text-xs tracking-widest text-[#5a5866]">
                   <strong className="text-[#1a162d]">{String(count)}</strong><span className="text-[9px] ml-1">件</span>
                 </span>
               </div>
@@ -564,9 +564,9 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
                   <h3 className="text-xs tracking-widest text-[#1a162d] uppercase whitespace-nowrap">評価分布</h3>
                   <div className="flex-1 h-[1px] bg-[#1a162d]/10"></div>
                   <div className="flex gap-2">
-                    <button onClick={() => setModalTab('easy')} className={`text-[10px] px-3 py-1 rounded-full border transition-colors ${modalTab === 'easy' ? 'bg-[#1a162d] text-white border-[#1a162d]' : 'text-[#8c8a99] border-[#1a162d]/20 hover:border-[#1a162d] hover:text-[#1a162d]'}`}>Aの易しさ</button>
-                    <button onClick={() => setModalTab('prof')} className={`text-[10px] px-3 py-1 rounded-full border transition-colors ${modalTab === 'prof' ? 'bg-[#1a162d] text-white border-[#1a162d]' : 'text-[#8c8a99] border-[#1a162d]/20 hover:border-[#1a162d] hover:text-[#1a162d]'}`}>教授の質</button>
-                    <button onClick={() => setModalTab('cls')} className={`text-[10px] px-3 py-1 rounded-full border transition-colors ${modalTab === 'cls' ? 'bg-[#1a162d] text-white border-[#1a162d]' : 'text-[#8c8a99] border-[#1a162d]/20 hover:border-[#1a162d] hover:text-[#1a162d]'}`}>授業の質</button>
+                    <button onClick={() => setModalTab('easy')} className={`text-xs px-3 py-1 rounded-full border transition-colors ${modalTab === 'easy' ? 'bg-[#1a162d] text-white border-[#1a162d]' : 'text-[#8c8a99] border-[#1a162d]/20 hover:border-[#1a162d] hover:text-[#1a162d]'}`}>Aの易しさ</button>
+                    <button onClick={() => setModalTab('prof')} className={`text-xs px-3 py-1 rounded-full border transition-colors ${modalTab === 'prof' ? 'bg-[#1a162d] text-white border-[#1a162d]' : 'text-[#8c8a99] border-[#1a162d]/20 hover:border-[#1a162d] hover:text-[#1a162d]'}`}>教授の質</button>
+                    <button onClick={() => setModalTab('cls')} className={`text-xs px-3 py-1 rounded-full border transition-colors ${modalTab === 'cls' ? 'bg-[#1a162d] text-white border-[#1a162d]' : 'text-[#8c8a99] border-[#1a162d]/20 hover:border-[#1a162d] hover:text-[#1a162d]'}`}>授業の質</button>
                   </div>
                 </div>
                 <div className="space-y-4">
@@ -594,8 +594,8 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
                       return (
                         <div key={score} className="flex items-center gap-4 group">
                           <div className="w-16 text-right shrink-0">
-                            <span className="text-xs font-medium text-[#1a162d]">{score}</span>
-                            <span className="text-[10px] text-[#8c8a99] ml-2">{labels[score as keyof typeof labels]}</span>
+                            <span className="text-sm font-bold text-[#1a162d]">{score}</span>
+                            <span className="text-xs text-[#8c8a99] ml-2">{labels[score as keyof typeof labels]}</span>
                           </div>
                           <div className="flex-1 h-3 bg-white/50 rounded-full overflow-hidden border border-[#1a162d]/5">
                             <div 
@@ -603,12 +603,12 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
                                 style={{ width: modalMounted ? `${percentage}%` : '0%' }}
                             ></div>
                           </div>
-                          <div className="w-6 text-right text-xs font-serif text-[#1a162d]">{count}</div>
+                          <div className="w-6 text-right text-sm font-medium text-[#1a162d]">{count}</div>
                         </div>
                       );
                     });
                   })()}
-                  <div className="text-[10px] text-right mt-6 tracking-widest text-[#8c8a99]">
+                  <div className="text-xs text-right mt-6 tracking-widest text-[#8c8a99]">
                     総レビュー数: {selectedProfDetails.reviews.length}件
                   </div>
                 </div>
@@ -699,11 +699,11 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
                     <div className="flex justify-between items-start mb-6 h-20 border-b border-[#1a162d]/10 pb-4">
                       <div>
                         <h3 className="text-3xl font-serif text-[#1a162d] leading-tight pr-4 line-clamp-2">{p.profName}</h3>
-                        <div className="mt-1 text-[10px] text-[#8c8a99] tracking-widest">{p.reviews.length}件のレビュー</div>
+                        <div className="mt-1 text-xs text-[#8c8a99] tracking-widest">{p.reviews.length}件のレビュー</div>
                       </div>
                       <button 
                         onClick={() => toggleCompare(p.profName, p.reviews)}
-                        className="text-[10px] tracking-widest text-[#8c8a99] hover:text-red-500 underline underline-offset-4 uppercase shrink-0 mt-2"
+                        className="text-xs tracking-widest text-[#8c8a99] hover:text-red-500 underline underline-offset-4 uppercase shrink-0 mt-2"
                       >
                         外す
                       </button>
@@ -726,7 +726,7 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
 
                     {/* Mini Distribution Chart */}
                     <div className="mb-6 pb-6 border-b border-[#1a162d]/10">
-                      <h4 className="text-[10px] font-bold tracking-widest text-[#5a5866] uppercase mb-3">Aの取りやすさの評価分布</h4>
+                      <h4 className="text-xs font-bold tracking-widest text-[#5a5866] uppercase mb-3">Aの取りやすさの評価分布</h4>
                       <div className="space-y-1.5">
                         {[5, 4, 3, 2, 1].map(score => {
                           const count = dist[score as keyof typeof dist];
