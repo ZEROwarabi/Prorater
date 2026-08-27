@@ -150,7 +150,7 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
           {isComparing ? (
             <>
               <Check size={12} strokeWidth={3} />
-              <span>比較中</span>
+              <span>比較する</span>
             </>
           ) : (
             <>
@@ -260,7 +260,7 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
                 list="courses"
                 value={searchCourse}
                 onChange={(e) => setSearchCourse(e.target.value)}
-                placeholder="科目名・分野を入力"
+                placeholder="科目名や分野を入力"
                 className="w-full max-w-3xl mx-auto block bg-transparent border-b border-[#1a162d]/20 py-4 text-3xl md:text-5xl font-serif font-light focus:outline-none focus:border-[#1a162d] transition-colors text-center text-[#1a162d] placeholder:text-[#1a162d]/20"
               />
               <datalist id="courses">
@@ -271,7 +271,7 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
               <div className="mt-12 animate-fade-in-up">
                 <div className="text-center mb-6 text-xs tracking-[0.2em] text-[#5a5866] font-medium uppercase">主要な分野から探す</div>
                 <div className="flex flex-wrap justify-center gap-3 mb-10">
-                  {(showAllTags ? uniqueCourses : ['MATH', 'ENGL', 'PHYS', 'CHEM', 'BIOL', 'BUS', 'ECON', 'HIST', 'COMSC', 'ANTHR', 'PSYC', 'SOCIO', 'ART'].filter(s => uniqueCourses.includes(s))).map(subj => (
+                  {uniqueCourses.map(subj => (
                     <button 
                       key={subj}
                       onClick={() => { 
@@ -283,15 +283,6 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
                       {courseFullNames[subj] || subj}
                     </button>
                   ))}
-                  <button 
-                    onClick={() => {
-                      if (!showAllTags) setShowAllTags(true);
-                      else { setSearchCourse(""); setGeFilter([]); setShowAllTags(false); }
-                    }}
-                    className={`px-5 py-2 rounded-full border text-xs font-medium tracking-wide transition-colors ${!showAllTags ? 'border-transparent text-[#5a5866] bg-[#e2e1dd]/50 hover:text-[#1a162d]' : (!searchCourse && geFilter.length === 0 ? 'bg-[#e2e1dd] border-transparent text-[#1a162d]' : 'border-transparent text-[#5a5866] hover:text-[#1a162d]')}`}
-                  >
-                    {!showAllTags ? 'すべて表示' : '閉じる / 選択クリア'}
-                  </button>
                 </div>
 
                 <div className="text-center mb-6 text-xs tracking-[0.2em] text-[#5a5866] font-medium uppercase">Cal-GETC / IGETC エリアから探す</div>
@@ -343,7 +334,7 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
         {/* Results Area */}
         <div>
           {/* COURSE RESULTS */}
-          {activeTab === 'course' && (searchCourse || geFilter.length > 0 || showAllTags) && (
+          {activeTab === 'course' && (
             Object.keys(courseGrouped).length === 0 ? (
               <div className="text-center py-12 text-[#8c8a99] tracking-widest text-sm font-light">結果が見つかりません。</div>
             ) : (
@@ -398,7 +389,7 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
                         </div>
 
                         <div className="flex items-center gap-6 mt-6 md:mt-0">
-                          <span className="text-[10px] tracking-widest text-[#8c8a99] uppercase mr-2"><SlidersHorizontal size={12} className="inline mr-2 -mt-0.5" />並べ替え:</span>
+                          <span className="text-[10px] tracking-widest text-[#8c8a99] uppercase mr-2"><SlidersHorizontal size={12} className="inline mr-2 -mt-0.5" />並べ替え</span>
                           <button 
                             onClick={() => setSortBy('reviews')} 
                             className={`text-[10px] tracking-widest transition-colors ${sortBy === 'reviews' ? 'text-[#1a162d] font-bold border-b border-[#1a162d]' : 'text-[#8c8a99] hover:text-[#1a162d]'}`}
@@ -493,7 +484,7 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
             ))}
           </div>
           <div className="text-sm tracking-widest font-light">
-            {compareList.length}名の教授を比較中
+            {compareList.length}名の教授を比較
           </div>
           <button 
             onClick={() => setShowCompareModal(true)}
@@ -700,7 +691,7 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
 
                     {/* Mini Distribution Chart */}
                     <div className="mb-6 pb-6 border-b border-[#1a162d]/10">
-                      <h4 className="text-[10px] font-bold tracking-widest text-[#5a5866] uppercase mb-3">Aの取りやすさ・評価分布</h4>
+                      <h4 className="text-[10px] font-bold tracking-widest text-[#5a5866] uppercase mb-3">Aの取りやすさの評価分布</h4>
                       <div className="space-y-1.5">
                         {[5, 4, 3, 2, 1].map(score => {
                           const count = dist[score as keyof typeof dist];
