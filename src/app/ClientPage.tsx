@@ -48,7 +48,7 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
   const [activeTab, setActiveTab] = useState<'course' | 'prof'>('course');
   const [searchCourse, setSearchCourse] = useState("");
   const [searchProf, setSearchProf] = useState("");
-  const [sortBy, setSortBy] = useState<SortOption>('easy');
+  const [sortBy, setSortBy] = useState<SortOption>('easyRating');
   const [geFilter, setGeFilter] = useState<string[]>([]); // New state for GE Area filtering
   const [showAllTags, setShowAllTags] = useState(false);
   const [modalTab, setModalTab] = useState<'easy'|'prof'|'cls'>('easy');
@@ -308,7 +308,7 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
                                 onClick={() => { setSearchCourse(subj); setGeFilter([]); }} 
                                 className="px-4 py-1.5 rounded-full border text-xs font-medium tracking-wide transition-colors shadow-sm border-[#1a162d]/15 text-[#3a3845] hover:border-[#1a162d] hover:text-[#1a162d] bg-white/50"
                               >
-                                {courseFullNames[subj] || subj}
+                                {String(courseFullNames[subj as keyof typeof courseFullNames] || subj)}
                               </button>
                             ))}
                           </div>
@@ -330,7 +330,7 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
                                 onClick={() => { setSearchCourse(subj); setGeFilter([]); }} 
                                 className="px-4 py-1.5 rounded-full border text-xs font-medium tracking-wide transition-colors shadow-sm border-[#1a162d]/15 text-[#3a3845] hover:border-[#1a162d] hover:text-[#1a162d] bg-white/50"
                               >
-                                {courseFullNames[subj] || subj}
+                                {String(courseFullNames[subj as keyof typeof courseFullNames] || subj)}
                               </button>
                             ))}
                           </div>
@@ -371,6 +371,20 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
                   </button>
                 </div>
               )}
+            </>
+          ) : (
+            <>
+              <input 
+                type="text" 
+                list="profs"
+                value={searchProf}
+                onChange={(e) => setSearchProf(e.target.value)}
+                placeholder="教授の名前を入力"
+                className="w-full bg-transparent border-b border-[#1a162d]/20 py-4 text-3xl md:text-5xl font-serif font-light focus:outline-none focus:border-[#1a162d] transition-colors text-center text-[#1a162d] placeholder:text-[#1a162d]/20"
+              />
+              <datalist id="profs">
+                {uniqueProfs.map(p => <option key={p} value={p} />)}
+              </datalist>
             </>
           )}
         </div>
@@ -530,7 +544,7 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
               }, {} as Record<string, number>)
             ).sort((a, b) => b[0].localeCompare(a[0])).map(([term, count]) => (
               <div key={term} className="text-[9px] tracking-widest text-[#5a5866] bg-white/40 px-3 py-1.5 rounded-full border border-[#1a162d]/5">
-                {term} : <span className="font-bold text-[#1a162d]">{count}</span>件
+                {String(term)} : <span className="font-bold text-[#1a162d]">{String(count)}</span>件
               </div>
             ))}
           </div>
@@ -628,7 +642,7 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
                       
                       const val = Math.round(rawVal);
                       if (val >= 1 && val <= 5) {
-                        dist[val]++;
+                        dist[val as keyof typeof dist]++;
                         totalValid++;
                       }
                     });
@@ -636,13 +650,13 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
                     const labels = { 5: '最高', 4: '良い', 3: '普通', 2: '微妙', 1: '最悪' };
                     
                     return [5, 4, 3, 2, 1].map(score => {
-                      const count = dist[score];
+                      const count = dist[score as keyof typeof dist];
                       const percentage = totalValid > 0 ? (count / totalValid) * 100 : 0;
                       return (
                         <div key={score} className="flex items-center gap-4 group">
                           <div className="w-16 text-right shrink-0">
                             <span className="text-xs font-medium text-[#1a162d]">{score}</span>
-                            <span className="text-[10px] text-[#8c8a99] ml-2">{labels[score]}</span>
+                            <span className="text-[10px] text-[#8c8a99] ml-2">{labels[score as keyof typeof labels]}</span>
                           </div>
                           <div className="flex-1 h-3 bg-white/50 rounded-full overflow-hidden border border-[#1a162d]/5">
                             <div 
