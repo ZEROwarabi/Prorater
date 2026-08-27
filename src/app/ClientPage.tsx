@@ -237,8 +237,11 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
   return (
     <div className="min-h-screen bg-[#ecebe8] text-[#1a162d] font-sans pb-32 relative">
       <header className="pt-12 pb-16 px-8">
-        <div className="max-w-6xl mx-auto flex justify-center items-center">
-          <div className="font-serif text-2xl tracking-[0.2em] italic font-light cursor-pointer" onClick={() => { setSearchCourse(""); setSearchProf(""); }}>ProRater.</div>
+        <div className="max-w-6xl mx-auto flex justify-center items-center relative">
+          <div className="font-serif text-3xl tracking-[0.2em] italic font-light cursor-pointer relative" onClick={() => { setSearchCourse(""); setSearchProf(""); }}>
+            ProRater.
+            <span className="absolute -right-8 top-1 text-[9px] text-[#8c8a99] font-sans not-italic tracking-wider font-bold">v1.1</span>
+          </div>
         </div>
       </header>
 
@@ -511,7 +514,26 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
             )
           )}
         </div>
-      </main>
+        </main>
+
+        <footer className="mt-24 border-t border-[#1a162d]/10 pt-12 pb-24 px-6 max-w-4xl mx-auto text-center opacity-80">
+          <h3 className="text-xs font-bold tracking-[0.2em] text-[#1a162d] uppercase mb-6">About this Data</h3>
+          <p className="text-[10px] tracking-widest text-[#5a5866] leading-relaxed mb-8 max-w-xl mx-auto">
+            現在、総計<span className="font-bold text-[#1a162d]">{initialData.length}</span>件の学生レビューデータが登録されています。
+          </p>
+          <div className="flex flex-wrap justify-center gap-2 max-w-2xl mx-auto">
+            {Object.entries(
+              initialData.reduce((acc, r) => {
+                if (r.term) acc[r.term] = (acc[r.term] || 0) + 1;
+                return acc;
+              }, {} as Record<string, number>)
+            ).sort((a, b) => b[0].localeCompare(a[0])).map(([term, count]) => (
+              <div key={term} className="text-[9px] tracking-widest text-[#5a5866] bg-white/40 px-3 py-1.5 rounded-full border border-[#1a162d]/5">
+                {term} : <span className="font-bold text-[#1a162d]">{count}</span>件
+              </div>
+            ))}
+          </div>
+        </footer>
 
       {/* Floating Compare Bar */}
       {compareList.length > 0 && (
