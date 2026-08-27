@@ -554,6 +554,13 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
           >
             比較する
           </button>
+          <button 
+            onClick={() => setCompareList([])}
+            className="ml-2 p-2 text-white/50 hover:text-white transition-colors rounded-full hover:bg-white/10"
+            title="比較リストをクリア"
+          >
+            <X size={18} />
+          </button>
         </div>
       )}
 
