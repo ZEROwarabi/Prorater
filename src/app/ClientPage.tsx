@@ -45,12 +45,9 @@ const courseFullNames: Record<string, string> = {
 };
 
 export default function ClientPage({ initialData }: { initialData: Review[] }) {
-  const [activeTab, setActiveTab] = useState<'course' | 'prof'>('course');
-  const [searchCourse, setSearchCourse] = useState("");
-  const [searchProf, setSearchProf] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>('reviews');
   const [geFilter, setGeFilter] = useState<string[]>([]); // New state for GE Area filtering
-  const [showAllTags, setShowAllTags] = useState(false);
   const [modalTab, setModalTab] = useState<'easy'|'prof'|'cls'>('easy');
 
   // Modals / Overlays
@@ -68,28 +65,23 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
   const uniqueProfs = useMemo(() => Array.from(new Set(initialData.map(r => r.profName).filter(p => p && !p.includes('Unknown')))).sort(), []);
 
   const filteredData = useMemo(() => {
-    const validData = initialData.filter(r => r.profName && !r.profName.includes('Unknown'));
-    if (activeTab === 'course') {
-      let data = validData;
-      // Filter by GE Area if active
-      if (geFilter.length > 0) {
-        data = data.filter(r => geFilter.includes(r.course.toUpperCase()));
-      }
-      // Filter by text search if present
-      if (searchCourse) {
-        const exactPrefixMatch = uniqueCourses.find(uc => uc.toLowerCase() === searchCourse.toLowerCase());
-        if (exactPrefixMatch) {
-          data = data.filter(r => r.course === exactPrefixMatch);
-        } else {
-          data = data.filter(r => r.courseFull.toLowerCase().includes(searchCourse.toLowerCase()) || r.course.toLowerCase().includes(searchCourse.toLowerCase()));
-        }
-      }
-      return data;
-    } else {
-      if (!searchProf) return validData;
-      return validData.filter(r => r.profName.toLowerCase().includes(searchProf.toLowerCase()));
+    const validData = initialData.filter(r => r.profName && !r.profName.includes('Unknown') && r.course);
+    if (!searchQuery && geFilter.length === 0) return [];
+    
+    let data = validData;
+    if (geFilter.length > 0) {
+      data = data.filter(r => geFilter.some(area => r.course.toUpperCase().startsWith(area.toUpperCase())));
     }
-  }, [activeTab, searchCourse, searchProf, geFilter, uniqueCourses, initialData]);
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      data = data.filter(r => 
+        r.course.toLowerCase().includes(q) ||
+        (courseFullNames[r.course] && courseFullNames[r.course].toLowerCase().includes(q)) ||
+        r.profName.toLowerCase().includes(q)
+      );
+    }
+    return data;
+  }, [searchQuery, geFilter, initialData]);
 
   const courseGrouped = useMemo(() => {
     const groups: Record<string, Record<string, Review[]>> = {};
@@ -252,7 +244,7 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
     <div className="min-h-screen bg-[#ecebe8] text-[#1a162d] font-sans pb-32 relative">
       <header className="pt-12 pb-16 px-8">
         <div className="max-w-6xl mx-auto flex justify-center items-center relative">
-          <div className="font-serif text-3xl tracking-[0.2em] italic font-light cursor-pointer relative" onClick={() => { setSearchCourse(""); setSearchProf(""); }}>
+          <div className="font-serif text-3xl tracking-[0.2em] italic font-light cursor-pointer relative" onClick={() => { setSearchQuery(""); setGeFilter([]); }}>
             ProRater.
             <span className="absolute -right-8 bottom-1 text-[9px] text-[#8c8a99] font-sans not-italic tracking-wider font-bold">v1.1</span>
           </div>
@@ -261,42 +253,23 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
 
       <main className="max-w-5xl mx-auto px-6">
         
-        {/* Intent Tabs */}
-        <div className="flex justify-center gap-12 mb-16">
-          <button 
-            onClick={() => setActiveTab('course')}
-            className={`pb-2 text-sm tracking-[0.1em] transition-all duration-500 relative ${activeTab === 'course' ? 'text-[#1a162d]' : 'text-[#8c8a99] hover:text-[#1a162d]'}`}
-          >
-            分野・科目から探す
-            {activeTab === 'course' && <span className="absolute left-0 bottom-0 w-full h-[1px] bg-[#1a162d]"></span>}
-          </button>
-          <button 
-            onClick={() => setActiveTab('prof')}
-            className={`pb-2 text-sm tracking-[0.1em] transition-all duration-500 relative ${activeTab === 'prof' ? 'text-[#1a162d]' : 'text-[#8c8a99] hover:text-[#1a162d]'}`}
-          >
-            教授名から探す
-            {activeTab === 'prof' && <span className="absolute left-0 bottom-0 w-full h-[1px] bg-[#1a162d]"></span>}
-          </button>
-        </div>
-
         {/* Search Area */}
         <div className="mb-24 max-w-4xl mx-auto relative group">
-          {activeTab === 'course' ? (
-            <>
-              <input 
+          <input 
                 type="text" 
-                list="courses"
-                value={searchCourse}
-                onChange={(e) => setSearchCourse(e.target.value)}
-                placeholder="科目名や分野を入力"
+                list="search-suggestions"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="教授名、科目名、分野名を入力"
                 className="w-full max-w-3xl mx-auto block bg-transparent border-b border-[#1a162d]/20 py-4 text-3xl md:text-5xl font-serif font-light focus:outline-none focus:border-[#1a162d] transition-colors text-center text-[#1a162d] placeholder:text-[#1a162d]/20"
               />
-              <datalist id="courses">
+              <datalist id="search-suggestions">
                 {uniqueCourses.map(c => <option key={c} value={c} />)}
+                {uniqueProfs.map(p => <option key={p} value={p} />)}
               </datalist>
               
               {/* Quick Tags Section */}
-              {(!searchCourse && geFilter.length === 0) ? (
+              {(!searchQuery && geFilter.length === 0) ? (
                 <div className="mt-12 animate-fade-in-up">
                   <div className="text-center mb-6 text-xs tracking-[0.2em] text-[#5a5866] font-medium uppercase">主要な分野から探す</div>
                   
@@ -318,7 +291,7 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
                             {availableSubjs.map(subj => (
                               <button 
                                 key={subj}
-                                onClick={() => { setSearchCourse(subj); setGeFilter([]); }} 
+                                onClick={() => { setSearchQuery(subj); setGeFilter([]); }} 
                                 className="px-4 py-1.5 rounded-full border text-xs font-medium tracking-wide transition-colors shadow-sm border-[#1a162d]/15 text-[#3a3845] hover:border-[#1a162d] hover:text-[#1a162d] bg-white/50"
                               >
                                 {String(courseFullNames[subj as keyof typeof courseFullNames] || subj)}
@@ -340,7 +313,7 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
                             {others.map(subj => (
                               <button 
                                 key={subj}
-                                onClick={() => { setSearchCourse(subj); setGeFilter([]); }} 
+                                onClick={() => { setSearchQuery(subj); setGeFilter([]); }} 
                                 className="px-4 py-1.5 rounded-full border text-xs font-medium tracking-wide transition-colors shadow-sm border-[#1a162d]/15 text-[#3a3845] hover:border-[#1a162d] hover:text-[#1a162d] bg-white/50"
                               >
                                 {String(courseFullNames[subj as keyof typeof courseFullNames] || subj)}
@@ -365,7 +338,7 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
                     ].map(area => (
                       <button 
                         key={area.label}
-                        onClick={() => { setSearchCourse(""); setGeFilter(area.keywords); }} 
+                        onClick={() => { setSearchQuery(""); setGeFilter(area.keywords); }} 
                         className="px-5 py-2 rounded-full border text-xs font-medium tracking-wide transition-colors shadow-sm border-[#1a162d]/15 text-[#3a3845] hover:bg-[#1a162d] hover:border-[#1a162d] hover:text-white bg-white/50"
                       >
                         {area.label}
@@ -376,7 +349,7 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
               ) : (
                 <div className="mt-8 flex justify-center animate-fade-in-up">
                   <button 
-                    onClick={() => { setSearchCourse(""); setGeFilter([]); }}
+                    onClick={() => { setSearchQuery(""); setGeFilter([]); }}
                     className="flex items-center gap-2 px-6 py-2.5 rounded-full border border-[#1a162d] bg-[#1a162d] text-white text-xs font-bold tracking-widest transition-all hover:bg-transparent hover:text-[#1a162d] shadow-sm hover:shadow"
                   >
                     <X size={14} />
@@ -384,29 +357,12 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
                   </button>
                 </div>
               )}
-            </>
-          ) : (
-            <>
-              <input 
-                type="text" 
-                list="profs"
-                value={searchProf}
-                onChange={(e) => setSearchProf(e.target.value)}
-                placeholder="教授の名前を入力"
-                className="w-full bg-transparent border-b border-[#1a162d]/20 py-4 text-3xl md:text-5xl font-serif font-light focus:outline-none focus:border-[#1a162d] transition-colors text-center text-[#1a162d] placeholder:text-[#1a162d]/20"
-              />
-              <datalist id="profs">
-                {uniqueProfs.map(p => <option key={p} value={p} />)}
-              </datalist>
-            </>
-          )}
         </div>
 
         {/* Results Area */}
         <div>
           {/* COURSE RESULTS */}
-          {activeTab === 'course' && (
-            Object.keys(courseGrouped).length === 0 ? (
+          {Object.keys(courseGrouped).length === 0 && (searchQuery || geFilter.length > 0) ? (
               <div className="text-center py-12 text-[#8c8a99] tracking-widest text-sm font-light">結果が見つかりません。</div>
             ) : (
               <div className="space-y-32 animate-fade-in-up" style={{ animationDuration: '0.8s' }}>
@@ -483,50 +439,10 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
                   );
                 })}
               </div>
-            )
-          )}
-
-          {/* PROFESSOR RESULTS */}
-          {activeTab === 'prof' && (
-            Object.keys(profGrouped).length === 0 ? (
-              <div className="text-center py-12 text-[#8c8a99] tracking-widest text-sm font-light">結果が見つかりません。</div>
-            ) : (
-              <div className="space-y-8 animate-fade-in-up" style={{ animationDuration: '0.8s' }}>
-                {!searchProf && (
-                  <div className="text-center mb-10 text-xs tracking-[0.2em] text-[#5a5866] font-medium uppercase">
-                    レビュー数の多い人気の教授 Top 20
-                  </div>
-                )}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-16">
-                  {Object.entries(profGrouped)
-                    .map(([profName, reviews]) => {
-                      const sortedReviews = [...reviews].sort((a, b) => {
-                        const scoreA = getTermScore(a.term);
-                          const scoreB = getTermScore(b.term);
-                          return scoreB - scoreA;
-                      });
-                      return { profName, reviews: sortedReviews, avgs: calculateAverages(sortedReviews) };
-                    })
-                    .sort((a, b) => {
-                      if (sortBy === 'reviews') {
-                          if (b.reviews.length !== a.reviews.length) return b.reviews.length - a.reviews.length;
-                          const latestA = a.reviews[0] ? getTermScore(a.reviews[0].term) : 0;
-                          const latestB = b.reviews[0] ? getTermScore(b.reviews[0].term) : 0;
-                          return latestB - latestA;
-                        }
-                      if (sortBy === 'profRating') return parseFloat(b.avgs.prof) - parseFloat(a.avgs.prof);
-                      if (sortBy === 'easyRating') return parseFloat(b.avgs.easy) - parseFloat(a.avgs.easy);
-                      return 0;
-                    })
-                    .slice(0, searchProf ? undefined : 20)
-                    .map(({ profName, reviews, avgs }) => renderProfCard(profName, reviews, avgs))
-                  }
-                </div>
-              </div>
-            )
-          )}
+            )}
         </div>
-        </main>
+
+      </main>
 
         <footer className="mt-24 border-t border-[#1a162d]/10 pt-12 pb-24 px-6 max-w-4xl mx-auto text-center opacity-80">
           <h3 className="text-xs font-bold tracking-[0.2em] text-[#1a162d] uppercase mb-6">About this Data</h3>
