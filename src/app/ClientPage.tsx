@@ -449,15 +449,20 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
           <p className="text-[10px] tracking-widest text-[#5a5866] leading-relaxed mb-8 max-w-xl mx-auto">
             現在、総計<span className="font-bold text-[#1a162d]">{initialData.length}</span>件の学生レビューデータが登録されています。
           </p>
-          <div className="flex flex-wrap justify-center gap-2 max-w-2xl mx-auto">
+          <div className="flex flex-col items-center gap-2 max-w-sm mx-auto">
             {Object.entries(
               initialData.reduce((acc, r) => {
-                if (r.term) acc[r.term] = (acc[r.term] || 0) + 1;
+                const match = String(r.term || '').match(/(\d{4})\s+(Spring|Summer|Fall|Winter)/i);
+                if (match) {
+                  const t = `${match[1]} ${match[2].charAt(0).toUpperCase() + match[2].slice(1).toLowerCase()}`;
+                  acc[t] = (acc[t] || 0) + 1;
+                }
                 return acc;
               }, {} as Record<string, number>)
-            ).sort((a, b) => b[0].localeCompare(a[0])).map(([term, count]) => (
-              <div key={term} className="text-[9px] tracking-widest text-[#5a5866] bg-white/40 px-3 py-1.5 rounded-full border border-[#1a162d]/5">
-                {String(term)} : <span className="font-bold text-[#1a162d]">{String(count)}</span>件
+            ).sort((a, b) => getTermScore(b[0]) - getTermScore(a[0])).map(([term, count]) => (
+              <div key={term} className="text-[10px] tracking-widest text-[#5a5866] flex justify-between w-full max-w-[200px] border-b border-[#1a162d]/10 pb-1 px-1">
+                <span>{String(term)}</span>
+                <span><strong className="text-[#1a162d]">{String(count)}</strong> 件</span>
               </div>
             ))}
           </div>
