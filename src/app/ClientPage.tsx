@@ -241,7 +241,7 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
         <div className="max-w-6xl mx-auto flex justify-center items-center relative">
           <div className="font-serif text-3xl tracking-[0.2em] italic font-light cursor-pointer relative" onClick={() => { setSearchCourse(""); setSearchProf(""); }}>
             ProRater.
-            <span className="absolute -right-8 top-1 text-[9px] text-[#8c8a99] font-sans not-italic tracking-wider font-bold">v1.1</span>
+            <span className="absolute -right-8 bottom-1 text-[9px] text-[#8c8a99] font-sans not-italic tracking-wider font-bold">v1.1</span>
           </div>
         </div>
       </header>
@@ -287,7 +287,7 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
                 <div className="mt-12 animate-fade-in-up">
                   <div className="text-center mb-6 text-xs tracking-[0.2em] text-[#5a5866] font-medium uppercase">主要な分野から探す</div>
                   
-                  <div className="w-full max-w-5xl mx-auto px-4 mb-10">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12 w-full max-w-5xl mx-auto px-4 mb-16">
                     {Object.entries({
                       "💻 理系・IT (STEM)": ["MATH", "COMSC", "STAT", "PHYS", "PHYSC", "CHEM", "BIOL", "ASTRO", "ENGIN", "OCEAN", "CIS", "PTEC"],
                       "📚 文系・語学 (Humanities)": ["ENGL", "ESL", "HIST", "PHILO", "HUMAN", "SPAN", "SPANISH", "FRANCE", "JAPAN", "CHIN", "ITAL", "SIGN", "COMM", "INTD"],
@@ -299,9 +299,9 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
                       const availableSubjs = subjects.filter(s => uniqueCourses.includes(s));
                       if (availableSubjs.length === 0) return null;
                       return (
-                        <div key={catName} className="mb-8">
-                          <div className="text-center text-[10px] tracking-widest text-[#8c8a99] font-bold mb-3">{catName}</div>
-                          <div className="flex flex-wrap justify-center gap-2">
+                        <div key={catName} className="flex flex-col">
+                          <div className="text-left text-[10px] tracking-widest text-[#8c8a99] font-bold mb-3">{catName}</div>
+                          <div className="flex flex-wrap justify-start gap-2">
                             {availableSubjs.map(subj => (
                               <button 
                                 key={subj}
@@ -321,9 +321,9 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
                       const others = uniqueCourses.filter(s => !categorized.includes(s));
                       if (others.length === 0) return null;
                       return (
-                        <div className="mb-8">
-                          <div className="text-center text-[10px] tracking-widest text-[#8c8a99] font-bold mb-3">その他</div>
-                          <div className="flex flex-wrap justify-center gap-2">
+                        <div className="flex flex-col">
+                          <div className="text-left text-[10px] tracking-widest text-[#8c8a99] font-bold mb-3">その他</div>
+                          <div className="flex flex-wrap justify-start gap-2">
                             {others.map(subj => (
                               <button 
                                 key={subj}
@@ -396,7 +396,7 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
             Object.keys(courseGrouped).length === 0 ? (
               <div className="text-center py-12 text-[#8c8a99] tracking-widest text-sm font-light">結果が見つかりません。</div>
             ) : (
-              <div className="space-y-32">
+              <div className="space-y-32 animate-fade-in-up" style={{ animationDuration: '0.8s' }}>
                 {Object.entries(courseGrouped).map(([course, profGroups]) => {
                   
                   // Sorting Logic
@@ -486,7 +486,7 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
             Object.keys(profGrouped).length === 0 ? (
               <div className="text-center py-12 text-[#8c8a99] tracking-widest text-sm font-light">結果が見つかりません。</div>
             ) : (
-              <div className="space-y-8">
+              <div className="space-y-8 animate-fade-in-up" style={{ animationDuration: '0.8s' }}>
                 {!searchProf && (
                   <div className="text-center mb-10 text-xs tracking-[0.2em] text-[#5a5866] font-medium uppercase">
                     レビュー数の多い人気の教授 Top 20
