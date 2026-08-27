@@ -280,7 +280,7 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-6">
+      <main className="max-w-[1400px] mx-auto px-6 lg:px-12">
         
         {/* Search Area */}
         <div className="mb-24 max-w-4xl mx-auto relative group">
