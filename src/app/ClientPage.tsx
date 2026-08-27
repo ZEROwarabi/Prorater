@@ -613,7 +613,10 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
                   学生の声 <span className="flex-1 h-[1px] bg-[#1a162d]/10"></span>
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                  {selectedProfDetails.reviews.filter(r => r.comment).map((r, i) => (
+                  {selectedProfDetails.reviews
+                      .filter(r => r.comment && r.comment.trim().length > 1)
+                      .filter((r, i, arr) => arr.findIndex(x => x.comment === r.comment) === i)
+                      .map((r, i) => (
                     <div key={i} className="pl-6 border-l border-[#1a162d] relative">
                       <div className="absolute -left-[5px] top-2 w-2 h-2 bg-[#1a162d] rounded-full"></div>
                       <div className="text-sm font-sans text-[#5a5866] mb-3 flex items-center gap-3 font-medium flex-wrap">
