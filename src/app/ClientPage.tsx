@@ -532,10 +532,33 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
               <X size={20} />
             </button>
 
-            <div className="mb-12 border-b border-[#1a162d]/10 pb-8">
-              <h2 className="text-5xl md:text-7xl font-serif text-[#1a162d]">{selectedProfDetails.profName}</h2>
-              <div className="mt-4 text-sm tracking-[0.2em] text-[#8c8a99] uppercase">全 {selectedProfDetails.reviews.length} 件のレビュー</div>
-            </div>
+            <div className="mb-12 border-b border-[#1a162d]/10 pb-8 flex flex-col md:flex-row md:items-start justify-between gap-6">
+                <div>
+                  <h2 className="text-5xl md:text-7xl font-serif text-[#1a162d] break-words">{selectedProfDetails.profName}</h2>
+                  <div className="mt-4 text-sm tracking-[0.2em] text-[#8c8a99] uppercase">全 {selectedProfDetails.reviews.length} 件のレビュー</div>
+                </div>
+                {(() => {
+                  const isComparing = compareList.some(p => p.profName === selectedProfDetails.profName);
+                  return (
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); toggleCompare(selectedProfDetails.profName, selectedProfDetails.reviews); }}
+                      className={`shrink-0 px-6 py-2.5 rounded-full border text-sm font-bold tracking-widest transition-all z-10 flex items-center justify-center gap-2 w-fit ${isComparing ? 'bg-[#1a162d] border-[#1a162d] text-white shadow-md' : 'bg-transparent border-[#1a162d]/20 text-[#5a5866] hover:border-[#1a162d] hover:text-[#1a162d]'}`}
+                    >
+                      {isComparing ? (
+                        <>
+                          <Check size={16} strokeWidth={3} />
+                          <span>比較中</span>
+                        </>
+                      ) : (
+                        <>
+                          <Plus size={16} strokeWidth={3} />
+                          <span>比較リストに追加</span>
+                        </>
+                      )}
+                    </button>
+                  );
+                })()}
+              </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-16 mb-20">
               {/* Left Column: Averages */}
