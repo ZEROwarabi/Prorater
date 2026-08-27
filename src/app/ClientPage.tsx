@@ -55,6 +55,7 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
   }, [rawData]);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>('reviews');
+  const [activeCourseTab, setActiveCourseTab] = useState<string | null>(null);
   const [geFilter, setGeFilter] = useState<string[]>([]); // New state for GE Area filtering
   const [modalTab, setModalTab] = useState<'easy'|'prof'|'cls'>('easy');
   
@@ -113,6 +114,15 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
     });
     return groups;
   }, [filteredData]);
+
+  useEffect(() => {
+    const keys = Object.keys(courseGrouped);
+    if (keys.length > 0 && (!activeCourseTab || !keys.includes(activeCourseTab))) {
+      setActiveCourseTab(keys[0]);
+    } else if (keys.length === 0) {
+      setActiveCourseTab(null);
+    }
+  }, [courseGrouped, activeCourseTab]);
 
   const profGrouped = useMemo(() => {
     const groups: Record<string, Review[]> = {};
@@ -384,8 +394,31 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
           {Object.keys(courseGrouped).length === 0 && (searchQuery || geFilter.length > 0) ? (
               <div className="text-center py-12 text-[#8c8a99] tracking-widest text-sm font-light">結果が見つかりません。</div>
             ) : (
-              <div key={searchQuery + geFilter.join(',')} className="space-y-32 animate-fade-in-up" style={{ animationDuration: '0.8s' }}>
-                {Object.entries(courseGrouped).map(([course, profGroups]) => {
+              <div key={searchQuery + geFilter.join(',')} className="animate-fade-in-up flex flex-col lg:flex-row items-start gap-12" style={{ animationDuration: '0.8s' }}>
+                  {/* Left Sidebar (Tabs) */}
+                  {Object.keys(courseGrouped).length > 1 && (
+                    <div className="w-full lg:w-64 shrink-0 lg:sticky lg:top-8 flex lg:flex-col gap-2 overflow-x-auto pb-4 lg:pb-0 scrollbar-hide">
+                      <div className="text-xs font-bold tracking-widest text-[#8c8a99] mb-4 uppercase px-4 hidden lg:block">科目を選択</div>
+                      {Object.keys(courseGrouped).sort().map(course => (
+                        <button
+                          key={course}
+                          onClick={() => setActiveCourseTab(course)}
+                          className={`px-4 py-3 text-left text-sm font-bold tracking-widest rounded-xl transition-all whitespace-nowrap flex justify-between items-center ${activeCourseTab === course ? 'bg-[#1a162d] text-white shadow-md' : 'bg-transparent text-[#8c8a99] hover:bg-white hover:shadow hover:text-[#1a162d]'}`}
+                        >
+                          <span>{course}</span>
+                          <span className={`text-xs font-sans ${activeCourseTab === course ? 'opacity-80' : 'opacity-60'}`}>
+                            {Object.keys(courseGrouped[course]).length}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Right Content Area */}
+                  <div className="flex-1 min-w-0 w-full space-y-32">
+                    {Object.entries(courseGrouped)
+                      .filter(([course]) => Object.keys(courseGrouped).length <= 1 || course === activeCourseTab)
+                      .map(([course, profGroups]) => {
                   
                   // Sorting Logic
                   const sortedProfs = Object.entries(profGroups).map(([profName, reviews]) => {
@@ -454,9 +487,10 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
                           return renderProfCard(profName, reviews, avgs);
                         })}
                       </div>
-                    </div>
+                                        </div>
                   );
                 })}
+                </div>
               </div>
             )}
         </div>
