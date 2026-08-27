@@ -48,7 +48,7 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
   const [activeTab, setActiveTab] = useState<'course' | 'prof'>('course');
   const [searchCourse, setSearchCourse] = useState("");
   const [searchProf, setSearchProf] = useState("");
-  const [sortBy, setSortBy] = useState<SortOption>('reviews');
+  const [sortBy, setSortBy] = useState<SortOption>('easy');
   const [geFilter, setGeFilter] = useState<string[]>([]); // New state for GE Area filtering
   const [showAllTags, setShowAllTags] = useState(false);
 
