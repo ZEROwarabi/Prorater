@@ -178,14 +178,14 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
         onClick={() => setSelectedProfDetails({ profName, reviews })}
         className="flex flex-col group relative min-h-[480px] h-full bg-white/40 p-8 border border-[#1a162d]/5 hover:border-[#1a162d]/20 transition-all rounded-3xl shadow-sm cursor-pointer hover:shadow-md"
       >
-        <div className="mb-6 border-b border-[#1a162d]/10 pb-4 relative">
+        <div className="mb-6 border-b border-[#1a162d]/10 pb-4 relative h-36 flex flex-col justify-start">
           <h4 
             onClick={() => setSelectedProfDetails({ profName, reviews })}
-            className="text-3xl font-serif text-[#1a162d] cursor-pointer hover:text-[#5a5866] transition-colors leading-tight break-words"
+            className="text-3xl font-serif text-[#1a162d] cursor-pointer hover:text-[#5a5866] transition-colors leading-tight break-words line-clamp-3"
           >
             {profName}
           </h4>
-          <div className="mt-2 text-xs text-[#8c8a99] tracking-widest">
+          <div className="mt-auto text-xs text-[#8c8a99] tracking-widest pt-2">
             {reviews.length}件のレビュー
           </div>
         </div>
