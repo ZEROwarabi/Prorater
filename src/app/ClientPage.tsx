@@ -270,7 +270,7 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
               
               {/* Quick Tags Section */}
               {(!searchQuery && geFilter.length === 0) ? (
-                <div className="mt-12 animate-fade-in-up">
+                <div key="tags" className="mt-12 animate-fade-in-up">
                   <div className="text-center mb-6 text-xs tracking-[0.2em] text-[#5a5866] font-medium uppercase">主要な分野から探す</div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12 w-full max-w-5xl mx-auto px-4 mb-16">
@@ -347,7 +347,7 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
                   </div>
                 </div>
               ) : (
-                <div className="mt-8 flex justify-center animate-fade-in-up">
+                <div key="clear" className="mt-8 flex justify-center animate-fade-in-up">
                   <button 
                     onClick={() => { setSearchQuery(""); setGeFilter([]); }}
                     className="flex items-center gap-2 px-6 py-2.5 rounded-full border border-[#1a162d] bg-[#1a162d] text-white text-xs font-bold tracking-widest transition-all hover:bg-transparent hover:text-[#1a162d] shadow-sm hover:shadow"
@@ -365,7 +365,7 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
           {Object.keys(courseGrouped).length === 0 && (searchQuery || geFilter.length > 0) ? (
               <div className="text-center py-12 text-[#8c8a99] tracking-widest text-sm font-light">結果が見つかりません。</div>
             ) : (
-              <div className="space-y-32 animate-fade-in-up" style={{ animationDuration: '0.8s' }}>
+              <div key={searchQuery + geFilter.join(',')} className="space-y-32 animate-fade-in-up" style={{ animationDuration: '0.8s' }}>
                 {Object.entries(courseGrouped).map(([course, profGroups]) => {
                   
                   // Sorting Logic
