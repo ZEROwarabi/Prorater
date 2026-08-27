@@ -147,7 +147,11 @@ export default function ClientPage({ initialData }: { initialData: Review[] }) {
   const renderProfCard = (profName: string, reviews: Review[], avgs: { prof: string, cls: string, easy: string }) => {
     const isComparing = compareList.some(p => p.profName === profName);
     return (
-      <div key={profName} className="flex flex-col group relative h-[480px] bg-white/40 p-8 border border-[#1a162d]/5 hover:border-[#1a162d]/20 transition-all rounded-3xl shadow-sm">
+      <div 
+        key={profName} 
+        onClick={() => setSelectedProfDetails({ profName, reviews })}
+        className="flex flex-col group relative h-[480px] bg-white/40 p-8 border border-[#1a162d]/5 hover:border-[#1a162d]/20 transition-all rounded-3xl shadow-sm cursor-pointer hover:shadow-md"
+      >
         
         {/* Compare Action */}
         <button 
