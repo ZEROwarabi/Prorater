@@ -286,16 +286,13 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
         <div className="mb-24 max-w-4xl mx-auto relative group">
           <input 
                 type="text" 
-                list="search-suggestions"
+                autoComplete="off"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="教授名、科目名、分野名を入力"
                 className="w-full max-w-3xl mx-auto block bg-transparent border-b border-[#1a162d]/20 py-4 text-3xl md:text-5xl font-serif font-light focus:outline-none focus:border-[#1a162d] transition-colors text-center text-[#1a162d] placeholder:text-[#1a162d]/20"
               />
-              <datalist id="search-suggestions">
-                {uniqueCourses.map(c => <option key={c} value={c} />)}
-                {uniqueProfs.map(p => <option key={p} value={p} />)}
-              </datalist>
+              
               
               {/* Quick Tags Section */}
               {(!searchQuery && geFilter.length === 0) ? (
