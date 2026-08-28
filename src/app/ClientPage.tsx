@@ -397,7 +397,7 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
               <div key={searchQuery + geFilter.join(',')} className="animate-fade-in-up flex flex-col gap-12" style={{ animationDuration: '0.8s' }}>
                   {/* Sticky Top Tabs */}
                   {Object.keys(courseGrouped).length > 1 && (
-                    <div className="w-full sticky top-0 z-40 bg-[#ecebe8]/90 backdrop-blur-md py-4 -mx-6 px-6 lg:-mx-12 lg:px-12 border-b border-[#1a162d]/10 flex gap-3 overflow-x-auto scrollbar-hide shadow-sm">
+                    <div className="w-full sticky top-0 z-40 bg-[#ecebe8]/80 backdrop-blur-md py-4 -mx-6 px-6 lg:-mx-12 lg:px-12 flex gap-3 overflow-x-auto scrollbar-hide">
                       {Object.keys(courseGrouped).sort().map(course => (
                         <button
                           key={course}
