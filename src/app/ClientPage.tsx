@@ -7,6 +7,16 @@ type Review = any;
 
 type SortOption = 'reviews' | 'profRating' | 'easyRating';
 
+const subjectCategories: Record<string, string[]> = {
+  "💻 理系・IT (STEM)": ["MATH", "COMSC", "STAT", "PHYS", "PHYSC", "CHEM", "BIOL", "ASTRO", "ENGIN", "OCEAN", "CIS", "PTEC"],
+  "📚 文系・語学 (Humanities)": ["ENGL", "ESL", "HIST", "PHILO", "HUMAN", "SPAN", "SPANISH", "FRANCE", "JAPAN", "CHIN", "ITAL", "SIGN", "COMM", "INTD"],
+  "🌍 社会科学 (Social Sciences)": ["ECON", "PSYC", "PHYCH", "SOCIO", "ANTHR", "POLS", "GEOG", "SOCSC", "ETHNIC", "ADJUS", "ECE"],
+  "💼 ビジネス (Business)": ["BUS", "BUSAC", "BUSMG", "BUSMK", "MARKETING", "ENTERPRENEURSHIP"],
+  "🎨 芸術・デザイン (Arts)": ["ART", "MUSIC", "MUSX", "DRAMA", "ARCHI", "IDSGN", "FTVE", "DANCE"],
+  "💪 体育・その他 (Others)": ["HSCI", "KNACT", "KNICA", "KNCMB", "ENACT", "COUNS", "COUNSELING", "AUSER", "SEARCH", "TUTOR"],
+};
+const allCategorizedSubjects = Object.values(subjectCategories).flat();
+
 const courseFullNames: Record<string, string> = {
   'ANTHR': 'Anthropology',
   'ARCHI': 'Architecture',
@@ -83,7 +93,7 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
     });
     return Object.keys(counts).sort((a, b) => counts[b] - counts[a]).slice(0, 10);
   }, [initialData]);
-  const uniqueProfs = useMemo(() => Array.from(new Set(initialData.map(r => r.profName).filter(p => p && !p.includes('Unknown')))).sort(), []);
+  const uniqueProfs = useMemo(() => Array.from(new Set(initialData.map(r => r.profName).filter(p => p && !p.includes('Unknown')))).sort(), [initialData]);
 
   const filteredData = useMemo(() => {
     const validData = initialData.filter(r => r.profName && !r.profName.includes('Unknown') && r.course);
@@ -91,15 +101,14 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
     
     let data = validData;
     if (geFilter.length > 0) {
-      data = data.filter(r => geFilter.some(area => r.course.toUpperCase().startsWith(area.toUpperCase())));
+      data = data.filter(r => geFilter.some(area => r.course.toUpperCase() === area.toUpperCase()));
     }
     if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      data = data.filter(r => 
-        r.course.toLowerCase().includes(q) ||
-        (courseFullNames[r.course] && courseFullNames[r.course].toLowerCase().includes(q)) ||
-        r.profName.toLowerCase().includes(q)
-      );
+      const tokens = searchQuery.toLowerCase().split(/\s+/).filter(Boolean);
+      data = data.filter(r => {
+        const haystack = [r.course, courseFullNames[r.course] || '', r.profName].join(' ').toLowerCase();
+        return tokens.every(token => haystack.includes(token));
+      });
     }
     return data;
   }, [searchQuery, geFilter, initialData]);
@@ -178,6 +187,7 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
     } else {
       document.body.style.overflow = 'unset';
     }
+    return () => { document.body.style.overflow = 'unset'; };
   }, [selectedProfDetails, showCompareModal]);
 
   const renderProfCard = (profName: string, reviews: Review[], avgs: { prof: string, cls: string, easy: string }) => {
@@ -300,14 +310,7 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
                   <div className="text-center mb-6 text-xs tracking-[0.2em] text-[#5a5866] font-medium uppercase">主要な分野から探す</div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12 w-full max-w-5xl mx-auto px-4 mb-16">
-                    {Object.entries({
-                      "💻 理系・IT (STEM)": ["MATH", "COMSC", "STAT", "PHYS", "PHYSC", "CHEM", "BIOL", "ASTRO", "ENGIN", "OCEAN", "CIS", "PTEC"],
-                      "📚 文系・語学 (Humanities)": ["ENGL", "ESL", "HIST", "PHILO", "HUMAN", "SPAN", "SPANISH", "FRANCE", "JAPAN", "CHIN", "ITAL", "SIGN", "COMM", "INTD"],
-                      "🌍 社会科学 (Social Sciences)": ["ECON", "PSYC", "PHYCH", "SOCIO", "ANTHR", "POLS", "GEOG", "SOCSC", "ETHNIC", "ADJUS", "ECE"],
-                      "💼 ビジネス (Business)": ["BUS", "BUSAC", "BUSMG", "BUSMK", "MARKETING", "ENTERPRENEURSHIP"],
-                      "🎨 芸術・デザイン (Arts)": ["ART", "MUSIC", "MUSX", "DRAMA", "ARCHI", "IDSGN", "FTVE", "DANCE"],
-                      "💪 体育・その他 (Others)": ["HSCI", "KNACT", "KNICA", "KNCMB", "ENACT", "COUNS", "COUNSELING", "AUSER", "SEARCH", "TUTOR"]
-                    }).map(([catName, subjects]) => {
+                    {Object.entries(subjectCategories).map(([catName, subjects]) => {
                       const availableSubjs = subjects.filter(s => uniqueCourses.includes(s));
                       if (availableSubjs.length === 0) return null;
                       return (
@@ -329,8 +332,7 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
                     })}
                     
                     {(() => {
-                      const categorized = ["MATH", "COMSC", "STAT", "PHYS", "PHYSC", "CHEM", "BIOL", "ASTRO", "ENGIN", "OCEAN", "CIS", "PTEC", "ENGL", "ESL", "HIST", "PHILO", "HUMAN", "SPAN", "SPANISH", "FRANCE", "JAPAN", "CHIN", "ITAL", "SIGN", "COMM", "INTD", "ECON", "PSYC", "PHYCH", "SOCIO", "ANTHR", "POLS", "GEOG", "SOCSC", "ETHNIC", "ADJUS", "ECE", "BUS", "BUSAC", "BUSMG", "BUSMK", "MARKETING", "ENTERPRENEURSHIP", "ART", "MUSIC", "MUSX", "DRAMA", "ARCHI", "IDSGN", "FTVE", "DANCE", "HSCI", "KNACT", "KNICA", "KNCMB", "ENACT", "COUNS", "COUNSELING", "AUSER", "SEARCH", "TUTOR"];
-                      const others = uniqueCourses.filter(s => !categorized.includes(s));
+                      const others = uniqueCourses.filter(s => !allCategorizedSubjects.includes(s));
                       if (others.length === 0) return null;
                       return (
                         <div className="flex flex-col">
@@ -432,8 +434,8 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
                           const latestB = b.reviews[0] ? getTermScore(b.reviews[0].term) : 0;
                           return latestB - latestA;
                         }
-                    if (sortBy === 'profRating') return parseFloat(b.avgs.prof) - parseFloat(a.avgs.prof);
-                    if (sortBy === 'easyRating') return parseFloat(b.avgs.easy) - parseFloat(a.avgs.easy);
+                    if (sortBy === 'profRating') return (parseFloat(b.avgs.prof) || 0) - (parseFloat(a.avgs.prof) || 0);
+                    if (sortBy === 'easyRating') return (parseFloat(b.avgs.easy) || 0) - (parseFloat(a.avgs.easy) || 0);
                     return 0;
                   });
 
