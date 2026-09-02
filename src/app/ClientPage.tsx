@@ -3,7 +3,18 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Search, ChevronRight, SlidersHorizontal, X, Plus, Check } from 'lucide-react';
 
-type Review = any;
+export interface Review {
+  profName: string;
+  course: string;
+  courseFull: string;
+  term: string;
+  ratingEasy: number;
+  ratingProf: number;
+  ratingClass: number;
+  grading?: string;
+  comment?: string;
+  [key: string]: any;
+}
 
 type SortOption = 'reviews' | 'profRating' | 'easyRating';
 
@@ -230,28 +241,37 @@ export default function ClientPage({ initialData: rawData }: { initialData: Revi
           {/* Gradient fade out at the bottom to indicate more content */}
           <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-[#f5f5f4] to-transparent z-10 pointer-events-none"></div>
           
-          {reviews.some(r => r.grading) && (
-            <div className="mb-5">
-              <span className="text-xs font-bold text-[#5a5866] tracking-widest uppercase block mb-1.5">成績の付け方</span>
-              <p className="text-sm text-[#3a3845] leading-relaxed line-clamp-1">
-                {reviews.find(r => r.grading)?.grading}
-              </p>
-            </div>
-          )}
-          
-          {reviews.some(r => r.comment) && (
-            <div>
-              <span className="text-xs font-bold text-[#5a5866] tracking-widest uppercase block mb-2">学生の声</span>
-              <div className="pl-4 border-l-2 border-[#1a162d]/20 relative">
-                <div className="text-xs font-sans text-[#8c8a99] mb-1.5 flex items-center gap-2">
-                  <span className="font-medium text-[#5a5866]">{reviews.find(r => r.comment)?.term}</span>
-                </div>
-                <p className="text-sm text-[#1a162d] leading-relaxed font-serif italic line-clamp-3">
-                  "{reviews.find(r => r.comment)?.comment}"
-                </p>
-              </div>
-            </div>
-          )}
+          {(() => {
+            const firstGrading = reviews.find(r => r.grading);
+            const firstComment = reviews.find(r => r.comment);
+            
+            return (
+              <>
+                {firstGrading && (
+                  <div className="mb-5">
+                    <span className="text-xs font-bold text-[#5a5866] tracking-widest uppercase block mb-1.5">成績の付け方</span>
+                    <p className="text-sm text-[#3a3845] leading-relaxed line-clamp-1">
+                      {firstGrading.grading}
+                    </p>
+                  </div>
+                )}
+                
+                {firstComment && (
+                  <div>
+                    <span className="text-xs font-bold text-[#5a5866] tracking-widest uppercase block mb-2">学生の声</span>
+                    <div className="pl-4 border-l-2 border-[#1a162d]/20 relative">
+                      <div className="text-xs font-sans text-[#8c8a99] mb-1.5 flex items-center gap-2">
+                        <span className="font-medium text-[#5a5866]">{firstComment.term}</span>
+                      </div>
+                      <p className="text-sm text-[#1a162d] leading-relaxed font-serif italic line-clamp-3">
+                        "{firstComment.comment}"
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </>
+            );
+          })()}
         </div>
 
         <div className="flex justify-between items-center mt-3 pt-3 border-t border-[#1a162d]/10 shrink-0">
