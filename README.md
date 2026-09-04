@@ -39,7 +39,7 @@ ProRaterは、大学の授業や教授のレビューを素早く検索し、比
 
 1. Clone the repository
 ```bash
-git clone https://github.com/ZEROwarabi/Prorater.git
+git clone https://github.com/kei0205/Prorater.git
 cd prorater
 ```
 
